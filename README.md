@@ -1,3 +1,56 @@
+# FaceLab — facial aesthetics analysis app
+
+A full web app built on this repo's facial-aesthetics knowledge base. Upload a photo and get:
+
+- **Face map**: 478 MediaPipe landmarks, measured in the browser: thirds, fWHR, canthal tilt, eye spacing, jaw taper, lip/chin ratios and symmetry, drawn over your photo.
+- **Written analysis** (Claude vision + the `knowledge/` base): face-shape read, feature-by-feature notes, and a ranked priority plan.
+- **Hairstyles with barber scripts**, plus hair colour, facial hair and glasses options.
+- **"Try looks" studio**: AI previews of you with each recommended cut, colour, beard or frame, or any custom idea ("textured crop + light stubble"). Includes a before/after slider and download.
+- Skin routine, clothing colour palette, photo tips, caveats, and save-as-PDF.
+
+No ratings and no accounts. Photos are processed per request and never stored.
+
+## Deploy to Vercel
+
+1. Import this repo in Vercel (framework: Next.js, root directory: `/`). There's nothing else to configure.
+2. Add environment variables (Project → Settings → Environment Variables):
+
+| Variable | Required | What for |
+| --- | --- | --- |
+| `ANTHROPIC_API_KEY` | yes | Photo analysis (Claude). From console.anthropic.com |
+| `REPLICATE_API_TOKEN` | for previews | "What would I look like" images via FLUX Kontext (best identity preservation). From replicate.com |
+| `OPENAI_API_KEY` | alternative | Use gpt-image-1 for previews instead of Replicate |
+| `APP_ACCESS_CODE` | recommended | Passcode the UI asks for, so strangers can't spend your credits |
+| `ANTHROPIC_MODEL` | no | Override the model (default `claude-opus-5-5`) |
+
+3. Deploy. Analysis takes about 1–2 minutes and previews 10–40 s. Routes set `maxDuration = 300`, which fits Vercel's default (Fluid compute) limits.
+
+Without keys, `/analyze?demo=1` shows a sample report so you can explore the UI.
+
+## Run locally
+
+```bash
+npm install
+cp .env.example .env.local   # fill in keys
+npm run dev                  # http://localhost:3000
+```
+
+## How it's built
+
+| Piece | Where |
+| --- | --- |
+| Landing page | `app/page.tsx` |
+| Upload → goals → analysis → report flow | `app/analyze/page.tsx` |
+| Landmark detection + measurements (client, MediaPipe WASM self-hosted from `public/mediapipe`) | `lib/face.ts` |
+| Analysis API: Claude with structured output, knowledge base as a cached system prompt | `app/api/analyze/route.ts`, `lib/prompt.ts`, `lib/knowledge.ts` |
+| Report schema | `lib/schema.ts` |
+| Image previews API (Replicate FLUX Kontext or OpenAI gpt-image-1) | `app/api/visualize/route.ts`, `lib/image-providers.ts` |
+| Report UI, face map overlay, preview studio | `components/` |
+
+Edit anything in `knowledge/` or `SKILL.md` and the analysis picks it up on the next deploy.
+
+---
+
 # looksmaxxing skill
 
 A practical AI skill for hair, grooming, glasses, skincare, clothing and facial presentation.

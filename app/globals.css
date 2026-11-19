@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f5f3ee;
+  --surface: #ffffff;
+  --surface-2: #efece5;
+  --ink: #15140f;
+  --muted: #6b6860;
+  --line: #dedad0;
+  --accent: #2b4a3f;
+  --accent-ink: #ffffff;
+  --accent-soft: #dfe8e2;
+  --warn: #9a5b13;
+  --danger: #a12d2d;
+  --overlay: #1e8f6c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f0f0d;
+    --surface: #181816;
+    --surface-2: #22221f;
+    --ink: #f1efe9;
+    --muted: #a19d93;
+    --line: #2f2e2a;
+    --accent: #9cc7b4;
+    --accent-ink: #0f1a15;
+    --accent-soft: #1d2a24;
+    --warn: #e0a458;
+    --danger: #f08a8a;
+    --overlay: #5fe0b4;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f0f0d;
+  --surface: #181816;
+  --surface-2: #22221f;
+  --ink: #f1efe9;
+  --muted: #a19d93;
+  --line: #2f2e2a;
+  --accent: #9cc7b4;
+  --accent-ink: #0f1a15;
+  --accent-soft: #1d2a24;
+  --warn: #e0a458;
+  --danger: #f08a8a;
+  --overlay: #5fe0b4;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif-display), ui-serif, Georgia, serif;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-accent text-accent-ink hover:opacity-90;
+}
+@utility btn-ghost {
+  @apply btn border border-line bg-surface text-ink hover:bg-surface-2;
+}
+@utility card {
+  @apply rounded-2xl border border-line bg-surface;
+}
+@utility eyebrow {
+  @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-muted;
+}
+@utility chip {
+  @apply rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm transition hover:border-ink/40 disabled:opacity-50;
+  &[data-active="true"] {
+    @apply border-accent bg-accent text-accent-ink;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}
