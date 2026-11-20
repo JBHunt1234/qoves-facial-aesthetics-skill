@@ -7,6 +7,7 @@ export const GoalsSchema = z.object({
   maintenance: z.string().default("medium"),
   wearsGlasses: z.boolean().default(false),
   facialHair: z.string().default("unsure"),
+  hairLength: z.string().default("Keep my length"),
   notes: z.string().max(1500).default(""),
   industry: z.string().max(80).default(""),
   dressCodes: z.array(z.string()).default([]),

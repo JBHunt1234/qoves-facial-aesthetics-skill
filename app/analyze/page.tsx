@@ -39,7 +39,7 @@ export default function AnalyzePage() {
   const [geometry, setGeometry] = useState<FaceGeometry | null>(null);
   const [detecting, setDetecting] = useState(false);
   const [detectMsg, setDetectMsg] = useState<string | null>(null);
-  const [goals, setGoals] = useState<Goals>({ desiredRead: [], context: ["Everyday"], maintenance: "medium", wearsGlasses: false, facialHair: "Open to it", notes: "", industry: "", dressCodes: ["Business casual"], body: { height: "", weight: "", build: "", fitNotes: "" } });
+  const [goals, setGoals] = useState<Goals>({ desiredRead: [], context: ["Everyday"], maintenance: "medium", wearsGlasses: false, facialHair: "Open to it", notes: "", hairLength: "Keep my length", industry: "", dressCodes: ["Business casual"], body: { height: "", weight: "", build: "", fitNotes: "" } });
   const [report, setReport] = useState<Report | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
@@ -240,6 +240,14 @@ export default function AnalyzePage() {
               options={["Minimal (under 2 min)", "Medium (5 min)", "High (happy to style daily)"]}
               value={[labelForMaintenance(goals.maintenance)]}
               onChange={(v) => setGoals({ ...goals, maintenance: v[0]?.split(" ")[0].toLowerCase() ?? "medium" })}
+            />
+          </Field>
+          <Field label="Hair length">
+            <ChipGroup
+              single
+              options={["Keep my length", "Want it longer", "Open to shorter"]}
+              value={[goals.hairLength]}
+              onChange={(v) => setGoals({ ...goals, hairLength: v[0] ?? "Keep my length" })}
             />
           </Field>
           <Field label="Facial hair">

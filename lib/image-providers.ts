@@ -43,7 +43,7 @@ interface ReplicatePrediction {
 
 async function replicateEdit(image: string, prompt: string): Promise<string> {
   const token = process.env.REPLICATE_API_TOKEN!;
-  const model = process.env.REPLICATE_MODEL || "black-forest-labs/flux-kontext-pro";
+  const model = process.env.REPLICATE_MODEL || "black-forest-labs/flux-kontext-max";
   const auth = { Authorization: `Bearer ${token}` };
 
   // Upload the photo to Replicate's file store (data URLs are size-limited).

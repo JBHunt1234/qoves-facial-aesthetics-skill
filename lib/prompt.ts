@@ -10,6 +10,7 @@ Follow the attached skill (SKILL.md) and knowledge base. In particular:
 - The user asked to see how close they are to the golden ratio. The app shows the numbers itself; in goldenRatioNote, interpret them plainly and practically. Mention that the face-length ratio depends on the estimated hairline and that smiling skews the mouth/lip ratios.
 - The landmark measurements are computed automatically from a single 2D photo; treat them as approximate hints that lens distance, head tilt and expression can skew. Use them to support observations, never to claim precision.
 - Every previewPrompt must be a self-contained image-editing instruction describing only the change, ending with: "Keep the same person, face, expression, skin, lighting and background unchanged." Be concrete about length, texture, colour and shape so the image model can render it. Match the person's real hair texture unless the option is explicitly about changing it.
+- Respect the hair length preference. If they want to keep their length (the default) or grow it, at least 3 of the hairstyles must work with their CURRENT length (restyling, parting, finish, light shaping) or longer; only include a shorter cut as the last option, labelled as such. For options that keep the length, the previewPrompt must begin "Restyle the person's existing hair, keeping its current length, ..." and must not name a hair colour.
 - ALWAYS return 4-6 hairstyles, even if the user's goals focus on clothing or skin. Hairstyle suggestions must be realistic for the person's visible hair density, texture and hairline. Barber scripts should be things they can say out loud (lengths, guard numbers, taper/fade height, texture, how to finish).
 - Wardrobe: tailor outfits to the user's industry and dress codes (e.g. finance → business formal and business casual first). Use their colouring, contrast level, face shape and build to choose colours, collars, lapels and fit. Be concrete enough to shop from (colour, fabric, cut). If height/weight/build are given, use them only for proportion and fit advice. Never suggest weight loss or comment on body size beyond fit. If no body photo is provided, say in wardrobe.summary that a waist-up or full-body photo improves fit advice.
 - If the photo is unusable (no face, multiple faces, heavily filtered, obscured), set photoQuality.usable=false, explain why, and keep the rest brief and generic.
@@ -26,6 +27,7 @@ export function buildUserText(goals: Goals, measurements: Measurement[], hasSide
   lines.push(`- Maintenance tolerance: ${goals.maintenance}`);
   lines.push(`- Wears glasses: ${goals.wearsGlasses ? "yes" : "no / sometimes"}`);
   lines.push(`- Facial hair preference: ${goals.facialHair}`);
+  lines.push(`- Hair length preference: ${goals.hairLength}`);
   lines.push(`- Industry / work: ${goals.industry || "not specified"}`);
   lines.push(`- Dress codes to cover: ${goals.dressCodes.length ? goals.dressCodes.join(", ") : "business casual, smart casual"}`);
   const b = goals.body;

@@ -8,6 +8,62 @@ import { BeforeAfter } from "./BeforeAfter";
 
 type Option = { name: string; why: string; previewPrompt: string; extra?: string; pieces?: string[]; occasion?: string; tag?: string };
 
+/** Appended to every hair edit so the result looks like the person's real hair, just styled differently. */
+const HAIR_REALISM =
+  " Only change the hair. Keep the person's exact natural hair colour, density and texture, keep the hairline exactly where it is, and make it look like real hair photographed in the same light. Do not change the face.";
+
+/** Styling changes that keep the person's current length. These render most naturally. */
+const RESTYLE: Option[] = [
+  {
+    tag: "Restyle your current hair",
+    name: "Bateman slick back (your length)",
+    why: "Your current length, combed up and back with height at the front, a subtle side part and a medium-shine finish. The most polished, finance-ready way to wear longer hair.",
+    previewPrompt:
+      "Restyle the person's existing hair, keeping its current length, into a polished 1980s executive slick back: combed up and back off the forehead with height at the front, a subtle side part, sides combed neatly back over the ears, medium-shine pomade finish.",
+    extra: "Keep my length. Just clean up the ends, take a little bulk out of the sides so they sit flat when combed back, and tidy the neckline. No clippers. I'll style it with pomade and a blow-dry for height.",
+  },
+  {
+    tag: "Restyle your current hair",
+    name: "Soft swept back, tucked behind the ears",
+    why: "Same length, pushed back with your fingers and tucked behind the ears, natural matte finish. The relaxed version of the slick back.",
+    previewPrompt:
+      "Restyle the person's existing hair, keeping its current length, swept back off the forehead with the fingers and tucked behind the ears, natural volume, soft matte finish, slightly piecey.",
+    extra: "Keep the length. Trim the ends only and texturise the top so it sits back without looking heavy.",
+  },
+  {
+    tag: "Restyle your current hair",
+    name: "Side part with volume",
+    why: "Your length with a deep side part and lift at the root. Classic and structured, and it reads well with a suit.",
+    previewPrompt:
+      "Restyle the person's existing hair, keeping its current length, into a deep side part with volume at the front, swept across and back, sides smoothed back over the ears, natural satin finish.",
+    extra: "Keep the length. Shape it so it falls into a side part, slightly shorter on the part side, and blend the ends.",
+  },
+  {
+    tag: "Restyle your current hair",
+    name: "Middle-part curtains",
+    why: "Your length parted down the middle so the front frames the face on both sides.",
+    previewPrompt:
+      "Restyle the person's existing hair, keeping its current length, with a centre part so the front falls in soft curtains framing both sides of the face, natural texture.",
+    extra: "Keep the length. Add long face-framing layers at the front so it falls into curtains, and point-cut the ends.",
+  },
+  {
+    tag: "Restyle your current hair",
+    name: "Wet-look comb back",
+    why: "Your length combed straight back with a glossy hold and visible comb lines. Bold, evening-ready.",
+    previewPrompt:
+      "Restyle the person's existing hair, keeping its current length, combed straight back off the forehead with a glossy wet-look gel finish and visible comb lines.",
+    extra: "Keep the length. Trim the ends and remove bulk so it lies flat when combed back.",
+  },
+  {
+    tag: "Restyle your current hair",
+    name: "Undone and textured",
+    why: "Your length, roughed up with texture spray and a few strands falling forward. Effortless rather than styled.",
+    previewPrompt:
+      "Restyle the person's existing hair, keeping its current length, into a messy undone texture with movement, pushed back loosely with a few strands falling across the forehead, matte finish.",
+    extra: "Keep the length. Point-cut and texturise throughout so it separates into strands.",
+  },
+];
+
 /** The user's saved inspiration cuts. Always shown in the Hairstyles tab. */
 const MY_PICKS: Option[] = [
   {
@@ -15,7 +71,7 @@ const MY_PICKS: Option[] = [
     name: "Swept-back flow, tucked behind the ears",
     why: "Medium length combed back off the forehead with a soft, natural (not wet) finish. The sides are long enough to tuck behind the ears and the back reaches the collar.",
     previewPrompt:
-      "Change the hairstyle to medium-length dark hair swept back off the forehead with natural volume and a soft matte finish, sides long enough to tuck behind the ears, back length reaching the shirt collar, slightly piecey and lived-in.",
+      "Change the hairstyle to medium-length hair swept back off the forehead with natural volume and a soft matte finish, sides long enough to tuck behind the ears, back length reaching the shirt collar, slightly piecey and lived-in.",
     extra: "Growing it out, about 10–13 cm on top and 7–9 cm on the sides, no fade or clippers. Keep length over the ears so it tucks back, and leave the back at collar length, just tidied. Texturise it so it sits back without looking heavy.",
   },
   {
@@ -23,7 +79,7 @@ const MY_PICKS: Option[] = [
     name: "Classic slick back with volume (Bateman)",
     why: "Polished and sharp. Hair is combed up and back with height at the front, a subtle side part and a medium-shine finish. Reads very finance.",
     previewPrompt:
-      "Change the hairstyle to a classic 1980s executive slicked-back style: dark hair combed up and back with noticeable height at the front, a subtle side part, neat tapered sides combed back over the ears, medium-shine pomade finish, every strand controlled.",
+      "Change the hairstyle to a classic 1980s executive slicked-back style: hair combed up and back with noticeable height at the front, a subtle side part, neat tapered sides combed back over the ears, medium-shine pomade finish, every strand controlled.",
     extra: "Scissor cut all over, no clippers. About 10–12 cm on top, graduated shorter to 5–6 cm on the sides so they comb back cleanly over the ears. Tapered neckline. I'll style it back with pomade and a blow-dry for height.",
   },
   {
@@ -31,7 +87,7 @@ const MY_PICKS: Option[] = [
     name: "Textured wavy side-sweep",
     why: "Loose natural waves with volume, swept to one side and falling around the ears. Softer and more approachable, and it looks good with a suit or open collar.",
     previewPrompt:
-      "Change the hairstyle to medium-length dark hair with loose natural waves and volume, swept to one side off the forehead, falling around the tops of the ears and touching the collar, soft and slightly tousled with a natural matte finish.",
+      "Change the hairstyle to medium-length hair with loose natural waves and volume, swept to one side off the forehead, falling around the tops of the ears and touching the collar, soft and slightly tousled with a natural matte finish.",
     extra: "Keep it long all over, about 12 cm on top and 8 cm on the sides. Layer it so the waves have movement and it doesn't go triangular. Remove a bit of bulk around the ears, no fade. I'll style it with sea salt spray and a light cream.",
   },
   {
@@ -39,7 +95,7 @@ const MY_PICKS: Option[] = [
     name: "Long wet-look slick back",
     why: "Longer hair combed straight back with a glossy, wet-look hold. Ends fall behind the ears to the nape. Bold, and best with stubble.",
     previewPrompt:
-      "Change the hairstyle to long dark hair combed straight back off the forehead with a glossy wet-look gel finish and visible comb lines, length falling behind the ears to the nape of the neck, a few strands slightly loose.",
+      "Change the hairstyle to long hair combed straight back off the forehead with a glossy wet-look gel finish and visible comb lines, length falling behind the ears to the nape of the neck, a few strands slightly loose.",
     extra: "Growing it long, 13–15 cm on top with the sides past the ears, all scissor work. Keep the weight so it lies flat when combed back, and tidy the ends at the nape. I'll wear it with a strong-hold gel combed straight back.",
   },
   {
@@ -47,7 +103,7 @@ const MY_PICKS: Option[] = [
     name: "Undone curtains, strands over the eyes",
     why: "Long, loose middle-part curtains with heavy front pieces falling across the forehead and eyes. The relaxed, after-hours version of the slick back.",
     previewPrompt:
-      "Change the hairstyle to long dark curtain hair with a loose centre part, heavy front pieces falling across the forehead and partly over the eyes, messy and undone, sides past the ears, natural matte texture.",
+      "Change the hairstyle to long curtain hair with a loose centre part, heavy front pieces falling across the forehead and partly over the eyes, messy and undone, sides past the ears, natural matte texture.",
     extra: "Long curtains, with the front pieces long enough to reach the cheekbones or eyes and the sides past the ears. Point-cut the ends so they separate into strands, and keep it heavy at the front. No fade.",
   },
 ];
@@ -104,6 +160,10 @@ const HAIR_LIBRARY: { label: string; prompt: string }[] = [
   { label: "Curtains", prompt: "Change the hairstyle to medium-length curtain hair with a soft middle part falling to the cheekbones." },
   { label: "Flow / bro flow", prompt: "Change the hairstyle to medium-long swept-back flow hair reaching just past the ears." },
   { label: "Shoulder length", prompt: "Change the hairstyle to shoulder-length layered hair with natural movement." },
+  { label: "Long layers", prompt: "Change the hairstyle to longer layered hair past the ears to the collar, swept back with natural movement." },
+  { label: "Long slick back", prompt: "Change the hairstyle to long hair slicked straight back to the nape with a medium-shine finish." },
+  { label: "Wavy flow", prompt: "Change the hairstyle to medium-long wavy hair pushed back, flowing past the ears with natural waves." },
+  { label: "Tuck-behind-ear length", prompt: "Change the hairstyle to medium-long hair parted to the side and tucked behind the ears, reaching the jaw." },
   { label: "Curly top fade", prompt: "Change the hairstyle to defined curls on top with a mid taper fade on the sides." },
 ];
 
@@ -167,7 +227,9 @@ export function PreviewStudio({
   const outfitBase = bodyPhoto ?? photo;
   const tabBase = tab === "outfits" || (tab === "custom" && customTarget === "body" && bodyPhoto) ? outfitBase : photo;
 
-  const generate = async (key: string, label: string, prompt: string, base: string) => {
+  const generate = async (key: string, label: string, rawPrompt: string, base: string) => {
+    const isHair = key.startsWith("hair-") || key.startsWith("lib-") || key.startsWith("quick-");
+    const prompt = isHair && !/hair colour to/i.test(rawPrompt) ? rawPrompt + HAIR_REALISM : rawPrompt;
     setGens((g) => ({ ...g, [key]: { status: "loading", label, base } }));
     setSelected(key);
     try {
@@ -179,7 +241,7 @@ export function PreviewStudio({
   };
 
   const tabs: { key: Tab; label: string; items: readonly Option[] }[] = [
-    { key: "hair", label: "Hairstyles", items: [...MY_PICKS, ...report.hairstyles.map((h) => ({ ...h, extra: h.barberScript, tag: "Recommended for you" }))] },
+    { key: "hair", label: "Hairstyles", items: [...RESTYLE, ...MY_PICKS, ...report.hairstyles.map((h) => ({ ...h, extra: h.barberScript, tag: "Recommended for you" }))] },
     { key: "outfits", label: "Outfits", items: report.wardrobe?.outfits ?? [] },
     { key: "skin", label: "Clear skin", items: SKIN_OPTIONS },
     { key: "color", label: "Hair colour", items: report.hairColors },
@@ -353,7 +415,7 @@ export function PreviewStudio({
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         {o.occasion && <p className="eyebrow mb-1">{o.occasion.replace(/_/g, " ")}</p>}
-                        {o.tag && <p className={`eyebrow mb-1 ${o.tag === "Your picks" ? "!text-[#b8891a]" : ""}`}>{o.tag}</p>}
+                        {o.tag && <p className={`eyebrow mb-1 ${o.tag === "Your picks" ? "!text-[#b8891a]" : o.tag === "Restyle your current hair" ? "!text-accent" : ""}`}>{o.tag}</p>}
                         <h4 className="font-semibold">{o.name}</h4>
                         <p className="mt-1 text-sm text-muted">{o.why}</p>
                       </div>
