@@ -6,6 +6,7 @@ A full web app built on this repo's facial-aesthetics knowledge base. Upload a p
 - **Written analysis** (Claude vision + the `knowledge/` base): face-shape read, feature-by-feature notes, and a ranked priority plan.
 - **Hairstyles with barber scripts**, plus hair colour, facial hair and glasses options.
 - **"Try looks" studio**: AI previews of you with each recommended cut, colour, beard or frame, or any custom idea ("textured crop + light stubble"). Includes a before/after slider and download.
+- **Wardrobe for your work**: pick your industry (finance, consulting, law…) and dress codes, plus optional height, weight and build. You get key pieces to buy, fit rules for your build, and 5–7 complete outfits. Preview any outfit on yourself, or quick-try suits, blazers, knitwear and casual looks. Upload a waist-up or full-body photo for whole-outfit previews.
 - Skin routine, clothing colour palette, photo tips, caveats, and save-as-PDF.
 
 No ratings and no accounts. Photos are processed per request and never stored.

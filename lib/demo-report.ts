@@ -63,6 +63,33 @@ export const DEMO_REPORT: Report = {
     avoidColors: ["Neon brights near the face", "Very pale yellows that wash out the skin"],
     tips: ["Crew necks and open collars work. Avoid very deep V-necks, which lengthen the face.", "Fitted shoulders and a structured collar frame the jaw."],
   },
+  wardrobe: {
+    summary:
+      "Sample. For a finance role, build on navy and charcoal tailoring with white and light-blue shirts. Medium contrast and a longer face suit spread collars and mid-width lapels. Add a waist-up photo for fit-specific advice.",
+    fitNotes: [
+      "Spread or semi-spread collars widen the neckline and balance a longer face. Skip narrow point collars.",
+      "Mid-width lapels (about 8–9 cm) with a matching tie width.",
+      "Jacket long enough to cover the seat, sleeves showing ¼–½ inch of cuff.",
+      "Trousers with a mid rise and slight or no break for a clean line.",
+    ],
+    keyPieces: [
+      { item: "Navy suit", spec: "Worsted wool, 2-button, notch lapel, half-canvas if budget allows; tailored at sleeves and waist", why: "Covers pitches, interviews and client meetings." },
+      { item: "Charcoal suit", spec: "Same cut as the navy; mid-weight wool for year-round wear", why: "Second formal option that rotates with the navy." },
+      { item: "Shirts", spec: "3 white and 3 light-blue, poplin and twill, semi-spread collar, slim fit", why: "These two colours cover 80% of finance dress codes." },
+      { item: "Grey wool trousers", spec: "Mid-grey, flat front, mid rise, no break", why: "Base for business casual with blazers and knitwear." },
+      { item: "Navy unstructured blazer", spec: "Hopsack or wool-cotton, soft shoulder, patch pockets", why: "Lifts business casual without looking like half a suit." },
+      { item: "Fine merino knits", spec: "Navy and charcoal crewnecks, fitted at the hem", why: "A sharper alternative to the fleece vest." },
+      { item: "Shoes", spec: "Black cap-toe oxfords, dark-brown suede loafers, matching belts", why: "Formal and business-casual footwear covered." },
+    ],
+    outfits: [
+      { occasion: "business_formal", name: "Client pitch", pieces: ["Navy worsted suit", "White poplin shirt", "Navy grenadine tie", "Black cap-toe oxfords"], why: "The highest-trust combination. Navy flatters medium contrast.", previewPrompt: "Dress the person in a tailored navy two-button suit, white semi-spread collar shirt and solid navy grenadine tie." + " Keep the same person, face, hair, body shape, pose, lighting and background unchanged." },
+      { occasion: "business_formal", name: "Board meeting", pieces: ["Charcoal suit", "Light-blue shirt", "Burgundy tie", "Black oxfords"], why: "Serious without being severe. Burgundy adds warmth near the face.", previewPrompt: "Dress the person in a tailored charcoal suit, light-blue dress shirt and burgundy silk tie." + " Keep the same person, face, hair, body shape, pose, lighting and background unchanged." },
+      { occasion: "business_casual", name: "Everyday desk", pieces: ["Navy merino crewneck", "Light-blue oxford", "Grey wool trousers", "Brown derbies"], why: "Polished with no tie. The collar under the knit frames the jaw.", previewPrompt: "Dress the person in a fine navy merino crewneck sweater over a light-blue oxford shirt with the collar showing, and mid-grey wool trousers." + " Keep the same person, face, hair, body shape, pose, lighting and background unchanged." },
+      { occasion: "business_casual", name: "Elevated casual", pieces: ["Navy unstructured blazer", "White OCBD", "Grey trousers", "Brown suede loafers"], why: "Reads senior on a business-casual floor.", previewPrompt: "Dress the person in an unstructured navy blazer over a white oxford button-down shirt open at the collar, with mid-grey trousers." + " Keep the same person, face, hair, body shape, pose, lighting and background unchanged." },
+      { occasion: "smart_casual", name: "Casual Friday", pieces: ["Navy knit polo", "Stone chinos", "Suede loafers"], why: "Relaxed but still deliberate.", previewPrompt: "Dress the person in a fitted navy knitted polo shirt and stone-coloured chinos." + " Keep the same person, face, hair, body shape, pose, lighting and background unchanged." },
+    ],
+    avoid: ["Black suits for business", "Fleece vests as a default layer", "Skinny ties and very slim lapels"],
+  },
   photography: [
     "Shoot from 1.5–2 m away and zoom in. Phone-at-arm's-length selfies widen the nose.",
     "Keep the camera at eye level or slightly above, with the chin slightly forward and down.",

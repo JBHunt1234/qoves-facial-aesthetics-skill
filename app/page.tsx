@@ -24,7 +24,8 @@ const SECTIONS = [
   ["Priority plan", "The 3–5 changes that matter most for your goal, ranked by impact and effort. Reversible moves first."],
   ["Hairstyles + barber script", "Cuts suited to your density, texture and hairline, with the exact words to say in the chair."],
   ["Hair colour, beard, glasses", "Options matched to your colouring and proportions. Preview each one on your own face."],
-  ["Skin, style and photos", "A simple AM/PM routine, a clothing palette for your contrast level, and how to photograph well."],
+  ["Wardrobe for your work", "Outfits for your dress codes (finance, consulting, law and more), key pieces to buy, and fit rules for your build. Preview each outfit on yourself."],
+  ["Skin, colour and photos", "A simple AM/PM routine, a clothing palette for your contrast level, and how to photograph well."],
 ];
 
 export default function Home() {
@@ -38,7 +39,7 @@ export default function Home() {
           </h1>
           <p className="mt-6 max-w-xl text-lg text-muted">
             Upload a photo and get a detailed read of your facial proportions and features. You also get a ranked plan for
-            hair, grooming, skin, glasses and style, and previews of how you&apos;d look with each change.
+            hair, grooming, skin, glasses and clothing, and previews of how you&apos;d look with each change.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/analyze" className="btn-primary !px-7 !py-3 text-base">

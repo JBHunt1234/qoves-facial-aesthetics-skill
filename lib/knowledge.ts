@@ -10,6 +10,7 @@ const FILES = [
   "knowledge/glasses-selection-guide.md",
   "knowledge/skincare-guide.md",
   "knowledge/style-principles.md",
+  "knowledge/workwear-and-dress-codes.md",
   "knowledge/common-mistakes.md",
   "knowledge/attractiveness-science.md",
 ];

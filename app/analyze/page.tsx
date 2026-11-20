@@ -14,6 +14,9 @@ type Status = { analysis: boolean; previews: string | null; accessCode: boolean 
 
 const READS = ["More put-together", "Sharper / more defined", "Softer / approachable", "Better on camera", "More attractive for dating", "More professional", "Lower maintenance", "More distinctive"];
 const CONTEXTS = ["Everyday", "Work / office", "Dating", "Social media", "Interviews", "Stage / video"];
+const INDUSTRIES = ["Finance / banking", "Private equity / investing", "Consulting", "Law", "Tech", "Sales", "Creative / media", "Student", "Other"];
+const DRESS_CODES = ["Business formal (suit & tie)", "Business casual", "Smart casual", "Casual / weekend", "Evening / events"];
+const BUILDS = ["Slim", "Average", "Athletic", "Broad / muscular", "Larger"];
 const FACIAL_HAIR = ["Open to it", "Prefer clean shaven", "Keep my current beard", "Can't grow much", "Not applicable"];
 
 const PROGRESS = [
@@ -22,6 +25,7 @@ const PROGRESS = [
   "Checking hair texture, density and hairline…",
   "Matching hairstyles to your face…",
   "Choosing frames, colours and grooming…",
+  "Building outfits for your dress codes…",
   "Ranking the highest-impact changes…",
   "Writing your report…",
 ];
@@ -30,10 +34,11 @@ export default function AnalyzePage() {
   const [step, setStep] = useState<Step>("upload");
   const [photo, setPhoto] = useState<string | null>(null);
   const [side, setSide] = useState<string | null>(null);
+  const [bodyPhoto, setBodyPhoto] = useState<string | null>(null);
   const [geometry, setGeometry] = useState<FaceGeometry | null>(null);
   const [detecting, setDetecting] = useState(false);
   const [detectMsg, setDetectMsg] = useState<string | null>(null);
-  const [goals, setGoals] = useState<Goals>({ desiredRead: [], context: ["Everyday"], maintenance: "medium", wearsGlasses: false, facialHair: "Open to it", notes: "" });
+  const [goals, setGoals] = useState<Goals>({ desiredRead: [], context: ["Everyday"], maintenance: "medium", wearsGlasses: false, facialHair: "Open to it", notes: "", industry: "", dressCodes: ["Business casual"], body: { height: "", weight: "", build: "", fitNotes: "" } });
   const [report, setReport] = useState<Report | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
@@ -83,13 +88,17 @@ export default function AnalyzePage() {
     setStep("report");
   }
 
-  async function onFile(file: File | undefined, which: "front" | "side") {
+  async function onFile(file: File | undefined, which: "front" | "side" | "body") {
     if (!file) return;
     setError(null);
     try {
       const dataUrl = await fileToDataUrl(file);
       if (which === "side") {
         setSide(dataUrl);
+        return;
+      }
+      if (which === "body") {
+        setBodyPhoto(dataUrl);
         return;
       }
       setPhoto(dataUrl);
@@ -121,7 +130,7 @@ export default function AnalyzePage() {
     try {
       const res = await postJson<{ report: Report }>(
         "/api/analyze",
-        { image: photo, sideImage: side ?? undefined, goals, measurements: geometry?.measurements ?? [] },
+        { image: photo, sideImage: side ?? undefined, bodyImage: bodyPhoto ?? undefined, goals, measurements: geometry?.measurements ?? [] },
         ctrl.signal,
       );
       setReport(res.report);
@@ -138,6 +147,7 @@ export default function AnalyzePage() {
     abortRef.current?.abort();
     setPhoto(null);
     setSide(null);
+    setBodyPhoto(null);
     setGeometry(null);
     setReport(null);
     setError(null);
@@ -146,7 +156,7 @@ export default function AnalyzePage() {
   }
 
   if (step === "report" && report && photo) {
-    return <ReportView report={report} photo={photo} geometry={geometry} provider={status?.previews ?? null} onReset={reset} />;
+    return <ReportView report={report} photo={photo} bodyPhoto={bodyPhoto} geometry={geometry} provider={status?.previews ?? null} onReset={reset} />;
   }
 
   return (
@@ -168,9 +178,16 @@ export default function AnalyzePage() {
           <h1 className="font-serif text-4xl tracking-tight sm:text-5xl">Upload your photo</h1>
           <p className="mt-3 text-muted">Face the camera straight on. Neutral expression, hair as you usually wear it, even light from the front.</p>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-[1.4fr_1fr]">
-            <DropZone label="Front photo" required image={photo} onFile={(f) => onFile(f, "front")} />
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            <DropZone label="Front face photo" required image={photo} onFile={(f) => onFile(f, "front")} />
             <DropZone label="Side or 3/4 view" hint="Optional, adds detail" image={side} onFile={(f) => onFile(f, "side")} onClear={() => setSide(null)} />
+            <DropZone
+              label="Waist-up or full body"
+              hint="Optional, for clothing previews and fit advice"
+              image={bodyPhoto}
+              onFile={(f) => onFile(f, "body")}
+              onClear={() => setBodyPhoto(null)}
+            />
           </div>
 
           <div className="mt-4 min-h-6 text-sm">
@@ -235,6 +252,33 @@ export default function AnalyzePage() {
               onChange={(v) => setGoals({ ...goals, wearsGlasses: v[0] === "I wear glasses" })}
             />
           </Field>
+          <h2 className="mt-12 font-serif text-3xl tracking-tight">Work & wardrobe</h2>
+          <p className="mt-2 text-sm text-muted">Used to build outfits for your dress codes. Height, weight and build are optional and only used for fit and proportion advice.</p>
+          <Field label="What do you do?">
+            <ChipGroup single options={INDUSTRIES} value={[goals.industry]} onChange={(v) => setGoals({ ...goals, industry: v[0] ?? "" })} />
+          </Field>
+          <Field label="Dress codes you need to cover">
+            <ChipGroup options={DRESS_CODES} value={goals.dressCodes} onChange={(v) => setGoals({ ...goals, dressCodes: v })} />
+          </Field>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <TextInput label="Height (optional)" placeholder={`e.g. 5'11" or 180 cm`} value={goals.body.height}
+              onChange={(v) => setGoals({ ...goals, body: { ...goals.body, height: v } })} />
+            <TextInput label="Weight (optional)" placeholder="e.g. 175 lb or 79 kg" value={goals.body.weight}
+              onChange={(v) => setGoals({ ...goals, body: { ...goals.body, weight: v } })} />
+          </div>
+          <Field label="Build (optional)">
+            <ChipGroup single options={BUILDS} value={[goals.body.build]}
+              onChange={(v) => setGoals({ ...goals, body: { ...goals.body, build: v[0] === goals.body.build ? "" : v[0] ?? "" } })} />
+          </Field>
+          <Field label="Fit issues (optional)">
+            <input
+              value={goals.body.fitNotes}
+              onChange={(e) => setGoals({ ...goals, body: { ...goals.body, fitNotes: e.target.value.slice(0, 500) } })}
+              placeholder="e.g. Suits are always tight in the shoulders, shirts billow at the waist"
+              className="w-full rounded-xl border border-line bg-surface p-3 text-sm outline-none focus:border-accent"
+            />
+          </Field>
+
           <Field label="Anything else? (optional)">
             <textarea
               value={goals.notes}
@@ -377,6 +421,20 @@ function DropZone({
           <p className="mt-1 text-sm text-muted">{hint ?? "Drop an image or click to choose"}</p>
         </div>
       )}
+    </label>
+  );
+}
+
+function TextInput({ label, placeholder, value, onChange }: { label: string; placeholder: string; value: string; onChange: (v: string) => void }) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-sm font-medium">{label}</span>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value.slice(0, 40))}
+        placeholder={placeholder}
+        className="w-full rounded-xl border border-line bg-surface p-3 text-sm outline-none focus:border-accent"
+      />
     </label>
   );
 }

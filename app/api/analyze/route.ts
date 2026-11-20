@@ -29,6 +29,7 @@ export async function POST(req: Request) {
   const front = parseDataUrl(body.image);
   if (!front) return jsonError("Photo must be a JPEG, PNG, WebP or GIF data URL.", 400);
   const side = body.sideImage ? parseDataUrl(body.sideImage) : null;
+  const bodyPhoto = body.bodyImage ? parseDataUrl(body.bodyImage) : null;
 
   const knowledge = await loadKnowledge();
   const client = new Anthropic();
@@ -39,7 +40,10 @@ export async function POST(req: Request) {
   if (side) {
     content.push({ type: "image", source: { type: "base64", media_type: side.mediaType, data: side.data } });
   }
-  content.push({ type: "text", text: buildUserText(body.goals, body.measurements, Boolean(side)) });
+  if (bodyPhoto) {
+    content.push({ type: "image", source: { type: "base64", media_type: bodyPhoto.mediaType, data: bodyPhoto.data } });
+  }
+  content.push({ type: "text", text: buildUserText(body.goals, body.measurements, Boolean(side), Boolean(bodyPhoto)) });
 
   try {
     const response = await client.beta.messages.parse({

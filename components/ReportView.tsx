@@ -11,6 +11,7 @@ const NAV = [
   ["map", "Face map"],
   ["features", "Features"],
   ["looks", "Try looks"],
+  ["wardrobe", "Wardrobe"],
   ["skin", "Skin"],
   ["style", "Style & colour"],
   ["photos", "Photos"],
@@ -30,12 +31,14 @@ const CATEGORY_LABEL: Record<string, string> = {
 export function ReportView({
   report,
   photo,
+  bodyPhoto = null,
   geometry,
   provider,
   onReset,
 }: {
   report: Report;
   photo: string;
+  bodyPhoto?: string | null;
   geometry: FaceGeometry | null;
   provider: string | null;
   onReset: () => void;
@@ -171,7 +174,7 @@ export function ReportView({
       {/* Looks */}
       <Section id="looks" title="Try looks on yourself" subtitle="Preview the recommended options on your own photo, or try any idea.">
         <div className="no-print">
-          <PreviewStudio photo={photo} report={report} provider={provider} />
+          <PreviewStudio photo={photo} bodyPhoto={bodyPhoto} report={report} provider={provider} />
         </div>
         <div className="hidden print:block">
           {report.hairstyles.map((h) => (
@@ -183,6 +186,70 @@ export function ReportView({
           ))}
         </div>
       </Section>
+
+      {/* Wardrobe */}
+      {report.wardrobe && (
+        <Section id="wardrobe" title="Wardrobe" subtitle={report.wardrobe.summary}>
+          <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+            <div>
+              <p className="eyebrow mb-3">Buy or own first</p>
+              <ol className="card divide-y divide-line">
+                {report.wardrobe.keyPieces.map((k, i) => (
+                  <li key={i} className="grid gap-1 p-4 sm:grid-cols-[28px_1fr]">
+                    <span className="font-serif text-xl text-muted">{i + 1}</span>
+                    <div>
+                      <p className="font-semibold">{k.item}</p>
+                      <p className="text-sm">{k.spec}</p>
+                      <p className="mt-1 text-sm text-muted">{k.why}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className="space-y-3">
+              <div className="card p-5">
+                <p className="eyebrow">Fit for your build</p>
+                <ul className="mt-3 space-y-2 text-sm">
+                  {report.wardrobe.fitNotes.map((t, i) => (
+                    <li key={i}>• {t}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="card p-5">
+                <p className="eyebrow">Skip</p>
+                <ul className="mt-3 space-y-2 text-sm">
+                  {report.wardrobe.avoid.map((t, i) => (
+                    <li key={i}>• {t}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+          <p className="eyebrow mb-3 mt-8">Outfits for your dress codes</p>
+          <div className="grid gap-3 md:grid-cols-2">
+            {report.wardrobe.outfits.map((o, i) => (
+              <div key={i} className="card p-5">
+                <p className="eyebrow">{o.occasion.replace(/_/g, " ")}</p>
+                <h3 className="mt-1 font-semibold">{o.name}</h3>
+                <ul className="mt-2 flex flex-wrap gap-1.5">
+                  {o.pieces.map((p) => (
+                    <li key={p} className="rounded-full bg-surface-2 px-2.5 py-1 text-xs">
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-sm text-muted">{o.why}</p>
+              </div>
+            ))}
+          </div>
+          <p className="no-print mt-4 text-sm">
+            <a href="#looks" className="underline">
+              Preview any outfit on yourself
+            </a>{" "}
+            in the Outfits tab above.
+          </p>
+        </Section>
+      )}
 
       {/* Skin */}
       <Section id="skin" title="Skin routine" subtitle={report.skincare.notes}>

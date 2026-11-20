@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 export const maxDuration = 300;
 
 const IDENTITY_SUFFIX =
-  " Keep the same person, face, facial features, expression, skin tone, lighting, camera angle and background unchanged. Photorealistic.";
+  " Keep the same person, face, facial features, expression, skin tone, body shape, pose, lighting, camera angle and background unchanged. Photorealistic.";
 
 export async function POST(req: Request) {
   const denied = checkAccess(req);

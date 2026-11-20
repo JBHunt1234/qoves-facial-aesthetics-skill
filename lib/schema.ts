@@ -8,6 +8,16 @@ export const GoalsSchema = z.object({
   wearsGlasses: z.boolean().default(false),
   facialHair: z.string().default("unsure"),
   notes: z.string().max(1500).default(""),
+  industry: z.string().max(80).default(""),
+  dressCodes: z.array(z.string()).default([]),
+  body: z
+    .object({
+      height: z.string().max(40).default(""),
+      weight: z.string().max(40).default(""),
+      build: z.string().max(40).default(""),
+      fitNotes: z.string().max(500).default(""),
+    })
+    .default({ height: "", weight: "", build: "", fitNotes: "" }),
 });
 export type Goals = z.infer<typeof GoalsSchema>;
 
@@ -100,6 +110,24 @@ export const ReportSchema = z.object({
     avoidColors: z.array(z.string()),
     tips: z.array(z.string()).describe("Necklines, fit, accessories"),
   }),
+  wardrobe: z.object({
+    summary: z.string().describe("2-3 sentences: how this person should dress for their industry and dress codes, given their colouring, face and build"),
+    fitNotes: z.array(z.string()).describe("3-5 fit and proportion rules specific to their height/build/face (collar, lapel, jacket length, rise, break, pattern scale)"),
+    keyPieces: z
+      .array(z.object({ item: z.string(), spec: z.string().describe("Colour, fabric, cut and fit details to buy"), why: z.string() }))
+      .describe("5-8 core pieces to own or buy first, in priority order"),
+    outfits: z
+      .array(
+        PreviewOption.extend({
+          occasion: z.enum(["business_formal", "business_casual", "smart_casual", "casual", "evening"]),
+          pieces: z.array(z.string()).describe("Each garment and accessory, e.g. 'Navy worsted 2-button suit'"),
+        }),
+      )
+      .describe(
+        "5-7 complete outfits covering the user's dress codes. previewPrompt describes ONLY the clothing change in detail (garments, colours, fabrics, fit), ending with: 'Keep the same person, face, hair, body shape, pose, lighting and background unchanged.'",
+      ),
+    avoid: z.array(z.string()).describe("2-3 clothing choices that work against them"),
+  }),
   photography: z.array(z.string()).describe("How to get better photos of this face: angle, distance, light"),
   avoid: z.array(z.object({ move: z.string(), why: z.string() })).describe("1-3 moves likely to work against the goal for now"),
   professionalReferrals: z
@@ -112,6 +140,7 @@ export type Report = z.infer<typeof ReportSchema>;
 export const AnalyzeRequestSchema = z.object({
   image: z.string().describe("data URL of the front photo"),
   sideImage: z.string().optional(),
+  bodyImage: z.string().optional(),
   goals: GoalsSchema,
   measurements: z.array(MeasurementSchema).default([]),
 });
