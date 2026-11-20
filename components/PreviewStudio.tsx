@@ -107,7 +107,7 @@ const MY_PICKS: Option[] = [
     extra: "Long curtains, with the front pieces long enough to reach the cheekbones or eyes and the sides past the ears. Point-cut the ends so they separate into strands, and keep it heavy at the front. No fade.",
   },
 ];
-type Gen = { status: "loading" | "done" | "error"; image?: string; error?: string; label: string; base: string };
+type Gen = { status: "loading" | "done" | "error"; image?: string; error?: string; label: string; base: string; raw: string };
 export type StudioTab = "hair" | "skin" | "color" | "beard" | "glasses" | "outfits" | "custom";
 type Tab = StudioTab;
 
@@ -230,18 +230,18 @@ export function PreviewStudio({
   const generate = async (key: string, label: string, rawPrompt: string, base: string) => {
     const isHair = key.startsWith("hair-") || key.startsWith("lib-") || key.startsWith("quick-");
     const prompt = isHair && !/hair colour to/i.test(rawPrompt) ? rawPrompt + HAIR_REALISM : rawPrompt;
-    setGens((g) => ({ ...g, [key]: { status: "loading", label, base } }));
+    setGens((g) => ({ ...g, [key]: { status: "loading", label, base, raw: rawPrompt } }));
     setSelected(key);
     try {
       const { image } = await postJson<{ image: string }>("/api/visualize", { image: base, prompt });
-      setGens((g) => ({ ...g, [key]: { status: "done", image, label, base } }));
+      setGens((g) => ({ ...g, [key]: { status: "done", image, label, base, raw: rawPrompt } }));
     } catch (e) {
-      setGens((g) => ({ ...g, [key]: { status: "error", error: (e as Error).message, label, base } }));
+      setGens((g) => ({ ...g, [key]: { status: "error", error: (e as Error).message, label, base, raw: rawPrompt } }));
     }
   };
 
   const tabs: { key: Tab; label: string; items: readonly Option[] }[] = [
-    { key: "hair", label: "Hairstyles", items: [...RESTYLE, ...MY_PICKS, ...report.hairstyles.map((h) => ({ ...h, extra: h.barberScript, tag: "Recommended for you" }))] },
+    { key: "hair", label: "Hairstyles", items: [...report.hairstyles.map((h) => ({ ...h, extra: h.barberScript, tag: "Recommended for you" })), ...RESTYLE, ...MY_PICKS] },
     { key: "outfits", label: "Outfits", items: report.wardrobe?.outfits ?? [] },
     { key: "skin", label: "Clear skin", items: SKIN_OPTIONS },
     { key: "color", label: "Hair colour", items: report.hairColors },
@@ -289,6 +289,12 @@ export function PreviewStudio({
             )}
             <div className="flex items-center justify-between px-1 pb-1 pt-3">
               <p className="text-sm font-medium">{sel?.label ?? "Your photo"}</p>
+              <div className="flex gap-2">
+              {selected && sel && sel.status !== "loading" && (
+                <button className="btn-ghost !py-1 !text-xs" disabled={!provider} onClick={() => generate(selected, sel.label, sel.raw, sel.base)}>
+                  Try again
+                </button>
+              )}
               {sel?.status === "done" && sel.image && (
                 <button
                   className="btn-ghost !py-1 !text-xs"
@@ -297,6 +303,7 @@ export function PreviewStudio({
                   Download
                 </button>
               )}
+              </div>
             </div>
           </div>
 

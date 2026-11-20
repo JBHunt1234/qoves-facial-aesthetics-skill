@@ -23,6 +23,16 @@ export const DEMO_REPORT: Report = {
     { title: "Grow 3–5 mm stubble, fuller at the chin", category: "facial_hair", why: "Adds visual mass to a tapered lower third.", how: "Trim weekly at 3 mm on the cheeks and 5 mm at the chin. Set the neckline one finger above the Adam's apple.", effort: "low", impact: "medium" },
     { title: "Frames as wide as your face, with a solid browline", category: "eyewear", why: "A strong top line repeats the brow and breaks up the face's length vertically.", how: "Pick 135–140 mm frames with a keyhole or mid-height bridge.", effort: "medium", impact: "medium" },
   ],
+  lengthVerdict: {
+    band: "medium_long",
+    headline: "Sample. Medium-long hair suits this face better than short cuts.",
+    reasons: [
+      "Face length runs long relative to cheekbone width, and short sides would make it look longer.",
+      "Prominent cheekbones and a moderate jaw taper are framed well by length over the ears.",
+      "Dense, slightly wavy hair has the quality to carry length without looking thin.",
+    ],
+    currentLength: "Medium, about 8 cm on top",
+  },
   hairstyles: [
     { name: "Textured crop, low taper", why: "Forward texture shortens the upper third. A low taper keeps width at the cheekbones.", previewPrompt: "Change the hairstyle to a short textured French crop with a low taper fade and a short choppy fringe, matte finish." + KEEP, maintenance: "2 min with clay. Cut every 3–4 weeks.", barberScript: "Low taper on the sides, number 2 at the bottom blending up. Leave about 5 cm on top, point-cut for texture, and push the fringe forward. Short and choppy, not blunt." },
     { name: "Short side part, natural finish", why: "Reads professional and adds a slight asymmetry that softens a long face.", previewPrompt: "Change the hairstyle to a short classic side part with tapered scissor-cut sides and a natural matte finish." + KEEP, maintenance: "3 min with a light cream. Cut every 4 weeks.", barberScript: "Scissor taper on the sides, not too tight. Around 6 cm on top, a soft natural part on the left, no hard line." },

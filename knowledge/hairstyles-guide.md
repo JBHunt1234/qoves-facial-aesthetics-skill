@@ -229,3 +229,31 @@ Examples: Emma Watson, Charlize Theron, Halle Berry
 ---
 
 **Remember:** What works for a celebrity works because of *their specific facial features,* not the hairstyle itself. Understand your features first, then choose styles that complement them.
+
+---
+
+## Choosing Hair Length From Face Proportions (Men)
+
+Decide the length band first, then pick the cut. Short-back-and-sides is a default, not a rule. Many faces look better with medium or medium-long hair.
+
+**Length bands:** short (clippers, under ~5 cm on top) · medium (5–10 cm on top, scissor sides covering the tops of the ears) · medium-long (10–15 cm, past the ears, tuckable, collar-length at the back) · long (jaw to shoulder or longer).
+
+**Signals that favour medium-long or long hair:**
+- **Long or narrow face** (face length clearly greater than ~1.5× cheekbone width, narrow temples): short sides make it look longer and thinner. Length and volume at the sides widen it; avoid height on top.
+- **Tall forehead or receding temples that are stable**: a fringe, curtains or hair swept forward or to the side shortens the upper third. Slick-backs only work if the hairline is strong.
+- **Prominent cheekbones with hollow cheeks, angular bone structure**: medium-long hair frames the bone structure and softens a gaunt look. Classic examples are swept-back flow and curtains.
+- **Large or long nose, strong brow**: more hair volume around the face balances strong central features. A tight fade spotlights them.
+- **Small ears that stick out, or an uneven head shape at the back or crown**: covering hair hides what clippers expose.
+- **Thick, straight or wavy hair with good density**: length shows off quality. Waves especially look best at medium-long.
+
+**Signals that favour shorter hair:**
+- **Thinning, diffuse density, or a crown that shows scalp**: length exaggerates thinning, so go shorter and textured.
+- **Wide or round face with a soft jaw**: long hair that ends at the jaw or cheeks adds width. Shorter sides with some height elongate.
+- **Very defined, square jaw on a short or wide face**: shorter hair shows the jaw. On a long face, though, the jaw also reads fine with medium-long hair.
+- **Very coarse or frizz-prone hair with low tolerance for styling**.
+
+**Working with medium-long hair:**
+- Ask for scissor work only (no clippers), layering to remove bulk so it doesn't go triangular, and length kept over the ears.
+- Restyling the existing length (slick back, swept back, side part, curtains, tucked) is the fastest, lowest-risk change.
+- Growing out from short: keep the back and sides tidy every 6–8 weeks while the top catches up. The awkward phase is usually months 2–4.
+- Finance and formal settings: medium-long is acceptable when it looks deliberate. Combed back with a medium-shine product, or a neat side part, with the ends and neckline kept clean.

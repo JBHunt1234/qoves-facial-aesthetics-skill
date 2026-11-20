@@ -197,6 +197,24 @@ export function ReportView({
 
       {/* Hairstyles */}
       <Section id="hair" title="Hairstyles for you" subtitle="Cuts matched to your face, hair density, texture and hairline, with what to say to your barber.">
+        {report.lengthVerdict && (
+          <div className="card mb-5 grid gap-5 p-5 md:grid-cols-[220px_1fr]">
+            <div>
+              <p className="eyebrow">Best length for your face</p>
+              <p className="mt-2 font-serif text-3xl capitalize">{report.lengthVerdict.band.replace("_", "-")}</p>
+              <LengthScale band={report.lengthVerdict.band} />
+              <p className="mt-3 text-xs text-muted">Now: {report.lengthVerdict.currentLength}</p>
+            </div>
+            <div>
+              <p className="font-semibold">{report.lengthVerdict.headline}</p>
+              <ul className="mt-2 space-y-1.5 text-sm text-muted">
+                {report.lengthVerdict.reasons.map((r, i) => (
+                  <li key={i}>• {r}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
         <div className="grid gap-3 md:grid-cols-2">
           {report.hairstyles.map((h, i) => (
             <div key={i} className="card flex flex-col p-5">
@@ -397,6 +415,24 @@ export function ReportView({
           ))}
         </ul>
       </Section>
+    </div>
+  );
+}
+
+function LengthScale({ band }: { band: string }) {
+  const bands = ["short", "medium", "medium_long", "long"];
+  const idx = bands.indexOf(band);
+  return (
+    <div className="mt-3">
+      <div className="flex gap-1">
+        {bands.map((b, i) => (
+          <div key={b} className={`h-2 flex-1 rounded-full ${i === idx ? "bg-accent" : "bg-surface-2"}`} />
+        ))}
+      </div>
+      <div className="mt-1 flex justify-between text-[10px] text-muted">
+        <span>Short</span>
+        <span>Long</span>
+      </div>
     </div>
   );
 }

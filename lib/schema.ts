@@ -84,6 +84,14 @@ export const ReportSchema = z.object({
       }),
     )
     .describe("The 3-5 highest-leverage reversible moves, most important first"),
+  lengthVerdict: z.object({
+    band: z.enum(["short", "medium", "medium_long", "long"]).describe("Best overall hair length band for this face"),
+    headline: z.string().describe("One sentence, e.g. 'Medium-long hair suits you better than short cuts.'"),
+    reasons: z
+      .array(z.string())
+      .describe("3-5 specific reasons tied to this person's proportions, measurements and hair (face length vs width, forehead, cheekbones, jaw, nose, density, texture)"),
+    currentLength: z.string().describe("Their current length as seen in the photo, e.g. 'medium-long, about 12 cm on top, over the ears'"),
+  }),
   hairstyles: z
     .array(
       PreviewOption.extend({
@@ -92,7 +100,7 @@ export const ReportSchema = z.object({
       }),
     )
     .min(3)
-    .describe("4-6 hairstyle options suited to this person, always included even if the photo is limited: a safe refinement of their current cut, a sharper/shorter option, and a longer or more textured option"),
+    .describe("4-6 hairstyle options, ALL within the lengthVerdict band or one step either side (shorter options only if lengthVerdict is short or the user asked for shorter). Order best first. Options suited to this person, always included even if the photo is limited: a safe refinement of their current cut, a sharper/shorter option, and a longer or more textured option"),
   hairColors: z.array(PreviewOption).describe("2-3 hair colour options; first should be a subtle, natural option"),
   facialHair: z.object({
     recommendation: z.string(),
