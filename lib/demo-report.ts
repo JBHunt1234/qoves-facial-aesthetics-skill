@@ -49,6 +49,7 @@ export const DEMO_REPORT: Report = {
     evening: ["Gentle cleanser", "Moisturiser", "Optional: retinoid 2–3 nights a week once tolerated"],
     weekly: ["Exfoliate once, gently (BHA if oily)", "Trim the brows and stubble line"],
     notes: "Keep it simple and consistent. See a dermatologist for any persistent breakouts or irritation.",
+    clearSkinNote: "Sample. Skin looks mostly clear with slight redness around the nose. A gentle routine and daily SPF help; see a dermatologist for breakouts that persist beyond a few months.",
   },
   style: {
     palette: [

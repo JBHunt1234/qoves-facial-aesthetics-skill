@@ -1,15 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import type { FaceGeometry } from "@/lib/face";
 import type { Report } from "@/lib/schema";
 import { FaceMap } from "./FaceMap";
-import { PreviewStudio } from "./PreviewStudio";
+import { PreviewStudio, type StudioTab } from "./PreviewStudio";
 
 const NAV = [
   ["overview", "Overview"],
   ["plan", "Priority plan"],
   ["map", "Face map"],
   ["features", "Features"],
+  ["hair", "Hairstyles"],
   ["looks", "Try looks"],
   ["wardrobe", "Wardrobe"],
   ["skin", "Skin"],
@@ -43,6 +45,12 @@ export function ReportView({
   provider: string | null;
   onReset: () => void;
 }) {
+  const [studioTab, setStudioTab] = useState<StudioTab>("hair");
+  const openStudio = (t: StudioTab) => {
+    setStudioTab(t);
+    document.getElementById("looks")?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="mx-auto max-w-6xl px-4 pb-10 pt-8 sm:px-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -171,19 +179,40 @@ export function ReportView({
         </div>
       </Section>
 
+      {/* Hairstyles */}
+      <Section id="hair" title="Hairstyles for you" subtitle="Cuts matched to your face, hair density, texture and hairline, with what to say to your barber.">
+        <div className="grid gap-3 md:grid-cols-2">
+          {report.hairstyles.map((h, i) => (
+            <div key={i} className="card flex flex-col p-5">
+              <p className="eyebrow">Option {i + 1}</p>
+              <h3 className="mt-1 text-lg font-semibold">{h.name}</h3>
+              <p className="mt-2 text-sm text-muted">{h.why}</p>
+              <p className="mt-3 text-sm">
+                <span className="font-medium">Upkeep: </span>
+                {h.maintenance}
+              </p>
+              <p className="mt-3 rounded-lg bg-surface-2 p-3 text-sm">
+                <span className="eyebrow mb-1 block">Say to your barber</span>“{h.barberScript}”
+              </p>
+            </div>
+          ))}
+        </div>
+        <button className="btn-primary no-print mt-5" onClick={() => openStudio("hair")}>
+          Preview these cuts on yourself
+        </button>
+      </Section>
+
       {/* Looks */}
       <Section id="looks" title="Try looks on yourself" subtitle="Preview the recommended options on your own photo, or try any idea.">
         <div className="no-print">
-          <PreviewStudio photo={photo} bodyPhoto={bodyPhoto} report={report} provider={provider} />
-        </div>
-        <div className="hidden print:block">
-          {report.hairstyles.map((h) => (
-            <div key={h.name} className="mb-3">
-              <p className="font-semibold">{h.name}</p>
-              <p className="text-sm">{h.why}</p>
-              <p className="text-sm italic">Barber: “{h.barberScript}”</p>
-            </div>
-          ))}
+          <PreviewStudio
+            photo={photo}
+            bodyPhoto={bodyPhoto}
+            report={report}
+            provider={provider}
+            tab={studioTab}
+            onTabChange={setStudioTab}
+          />
         </div>
       </Section>
 
@@ -253,6 +282,14 @@ export function ReportView({
 
       {/* Skin */}
       <Section id="skin" title="Skin routine" subtitle={report.skincare.notes}>
+        {report.skincare.clearSkinNote && (
+          <div className="card mb-4 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm">{report.skincare.clearSkinNote}</p>
+            <button className="btn-primary no-print shrink-0" onClick={() => openStudio("skin")}>
+              See yourself with clear skin
+            </button>
+          </div>
+        )}
         <div className="grid gap-3 md:grid-cols-3">
           {(
             [

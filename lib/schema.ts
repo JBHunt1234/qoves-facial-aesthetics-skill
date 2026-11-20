@@ -86,7 +86,8 @@ export const ReportSchema = z.object({
         barberScript: z.string().describe("What to literally say to the barber/stylist, including guard numbers or lengths where useful"),
       }),
     )
-    .describe("3-5 hairstyle options suited to this person"),
+    .min(3)
+    .describe("4-6 hairstyle options suited to this person, always included even if the photo is limited: a safe refinement of their current cut, a sharper/shorter option, and a longer or more textured option"),
   hairColors: z.array(PreviewOption).describe("2-3 hair colour options; first should be a subtle, natural option"),
   facialHair: z.object({
     recommendation: z.string(),
@@ -101,6 +102,9 @@ export const ReportSchema = z.object({
     evening: z.array(z.string()),
     weekly: z.array(z.string()),
     notes: z.string(),
+    clearSkinNote: z
+      .string()
+      .describe("One or two sentences on visible skin concerns (breakouts, redness, marks, uneven tone, under-eye darkness) and the realistic, non-prescriptive route to improving them (consistent routine, dermatologist for persistent acne). Neutral if skin is clear."),
   }),
   style: z.object({
     palette: z

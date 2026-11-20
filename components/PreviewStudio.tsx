@@ -8,7 +8,60 @@ import { BeforeAfter } from "./BeforeAfter";
 
 type Option = { name: string; why: string; previewPrompt: string; extra?: string; pieces?: string[]; occasion?: string };
 type Gen = { status: "loading" | "done" | "error"; image?: string; error?: string; label: string; base: string };
-type Tab = "hair" | "color" | "beard" | "glasses" | "outfits" | "custom";
+export type StudioTab = "hair" | "skin" | "color" | "beard" | "glasses" | "outfits" | "custom";
+type Tab = StudioTab;
+
+const NATURAL_SKIN =
+  " Keep natural skin texture, pores and the person's real skin tone so it looks like an unfiltered photo, not airbrushed. Do not change face shape, features, hair, expression, lighting or background.";
+
+const SKIN_OPTIONS: { name: string; why: string; previewPrompt: string }[] = [
+  {
+    name: "Clear acne",
+    why: "Removes active breakouts and blemishes so you can see your skin without them.",
+    previewPrompt: "Retouch the skin to remove all active acne, pimples, whiteheads and blemishes." + NATURAL_SKIN,
+  },
+  {
+    name: "Clear acne + fade marks",
+    why: "Also fades post-acne marks and dark spots, which usually take longer to clear than the breakouts.",
+    previewPrompt:
+      "Retouch the skin to remove all acne and blemishes and fade post-acne red and dark marks and spots." + NATURAL_SKIN,
+  },
+  {
+    name: "Smooth acne scarring",
+    why: "Softens textured scarring. In real life this usually needs professional treatment.",
+    previewPrompt: "Retouch the skin to smooth acne scarring and uneven texture while keeping realistic pores." + NATURAL_SKIN,
+  },
+  {
+    name: "Calm redness",
+    why: "Evens out redness around the nose, cheeks and chin.",
+    previewPrompt: "Reduce facial redness and blotchiness to an even, natural complexion." + NATURAL_SKIN,
+  },
+  {
+    name: "Even tone & rested eyes",
+    why: "Evens skin tone and softens under-eye darkness, like after good sleep and a steady routine.",
+    previewPrompt: "Even out the skin tone and lightly reduce under-eye darkness and puffiness so the person looks well rested." + NATURAL_SKIN,
+  },
+  {
+    name: "Healthy glow",
+    why: "Hydrated, healthy-looking skin with natural light reflection. Not makeup.",
+    previewPrompt: "Make the skin look healthy, hydrated and clear with a subtle natural glow, without makeup." + NATURAL_SKIN,
+  },
+];
+
+const HAIR_LIBRARY: { label: string; prompt: string }[] = [
+  { label: "Buzz cut", prompt: "Change the hairstyle to an even #2 buzz cut all over." },
+  { label: "Crew cut", prompt: "Change the hairstyle to a classic crew cut, short tapered sides and slightly longer top brushed forward." },
+  { label: "Textured crop", prompt: "Change the hairstyle to a short textured French crop with a mid fade and a short choppy fringe." },
+  { label: "Ivy League", prompt: "Change the hairstyle to an Ivy League cut, short tapered sides and a longer top with a soft side part." },
+  { label: "Side part", prompt: "Change the hairstyle to a classic tapered side part with a defined part and natural matte finish." },
+  { label: "Quiff", prompt: "Change the hairstyle to a modern textured quiff with short tapered sides." },
+  { label: "Slick back", prompt: "Change the hairstyle to a medium-length slicked-back style with natural shine and tapered sides." },
+  { label: "Messy fringe", prompt: "Change the hairstyle to a messy textured fringe with medium length on top and a low taper." },
+  { label: "Curtains", prompt: "Change the hairstyle to medium-length curtain hair with a soft middle part falling to the cheekbones." },
+  { label: "Flow / bro flow", prompt: "Change the hairstyle to medium-long swept-back flow hair reaching just past the ears." },
+  { label: "Shoulder length", prompt: "Change the hairstyle to shoulder-length layered hair with natural movement." },
+  { label: "Curly top fade", prompt: "Change the hairstyle to defined curls on top with a mid taper fade on the sides." },
+];
 
 const KEEP_BODY = " Keep the same person, face, hair, body shape, pose, lighting and background unchanged.";
 
@@ -46,15 +99,24 @@ export function PreviewStudio({
   bodyPhoto,
   report,
   provider,
+  tab: controlledTab,
+  onTabChange,
 }: {
   photo: string;
   bodyPhoto: string | null;
   report: Report;
   provider: string | null;
+  tab?: StudioTab;
+  onTabChange?: (t: StudioTab) => void;
 }) {
   const [gens, setGens] = useState<Record<string, Gen>>({});
   const [selected, setSelected] = useState<string | null>(null);
-  const [tab, setTab] = useState<Tab>("hair");
+  const [localTab, setLocalTab] = useState<Tab>("hair");
+  const tab = controlledTab ?? localTab;
+  const setTab = (t: Tab) => {
+    setLocalTab(t);
+    onTabChange?.(t);
+  };
   const [custom, setCustom] = useState("");
   const [customTarget, setCustomTarget] = useState<"face" | "body">("face");
 
@@ -73,8 +135,9 @@ export function PreviewStudio({
   };
 
   const tabs: { key: Tab; label: string; items: readonly Option[] }[] = [
-    { key: "outfits", label: "Outfits", items: report.wardrobe?.outfits ?? [] },
     { key: "hair", label: "Hairstyles", items: report.hairstyles.map((h) => ({ ...h, extra: h.barberScript })) },
+    { key: "outfits", label: "Outfits", items: report.wardrobe?.outfits ?? [] },
+    { key: "skin", label: "Clear skin", items: SKIN_OPTIONS },
     { key: "color", label: "Hair colour", items: report.hairColors },
     { key: "beard", label: "Facial hair", items: report.facialHair.options },
     { key: "glasses", label: "Glasses", items: report.eyewear.frames },
@@ -230,6 +293,13 @@ export function PreviewStudio({
             <div className="mt-5 space-y-3">
               {tab === "beard" && <p className="text-sm text-muted">{report.facialHair.recommendation}</p>}
               {tab === "glasses" && <p className="text-sm text-muted">{report.eyewear.recommendation}</p>}
+              {tab === "skin" && (
+                <p className="text-sm text-muted">
+                  {report.skincare.clearSkinNote ? `${report.skincare.clearSkinNote} ` : ""}
+                  These previews show what clearer skin could look like on you. They aren&apos;t a treatment plan. For acne that persists,
+                  a dermatologist can tell you what will actually work for your skin.
+                </p>
+              )}
               {active.items.length === 0 && <p className="text-sm text-muted">No suggestions in this category for you. Try “Try anything”.</p>}
               {active.items.map((o, i) => {
                 const key = `${tab}-${i}`;
@@ -269,6 +339,17 @@ export function PreviewStudio({
                   </div>
                 );
               })}
+              {tab === "hair" && (
+                <div className="pt-3">
+                  <p className="eyebrow mb-2">Style library: try any cut</p>
+                  <div className="flex flex-wrap gap-2">
+                    {HAIR_LIBRARY.map((q) => (
+                      <QuickChip key={q.label} label={q.label} loading={gens[`lib-${q.label}`]?.status === "loading"} disabled={!provider}
+                        onClick={() => generate(`lib-${q.label}`, q.label, q.prompt, photo)} />
+                    ))}
+                  </div>
+                </div>
+              )}
               {tab === "outfits" && (
                 <div className="pt-3">
                   <p className="eyebrow mb-2">More to try</p>
