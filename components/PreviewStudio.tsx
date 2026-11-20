@@ -6,7 +6,51 @@ import { downloadDataUrl } from "@/lib/image";
 import type { Report } from "@/lib/schema";
 import { BeforeAfter } from "./BeforeAfter";
 
-type Option = { name: string; why: string; previewPrompt: string; extra?: string; pieces?: string[]; occasion?: string };
+type Option = { name: string; why: string; previewPrompt: string; extra?: string; pieces?: string[]; occasion?: string; tag?: string };
+
+/** The user's saved inspiration cuts. Always shown in the Hairstyles tab. */
+const MY_PICKS: Option[] = [
+  {
+    tag: "Your picks",
+    name: "Swept-back flow, tucked behind the ears",
+    why: "Medium length combed back off the forehead with a soft, natural (not wet) finish. The sides are long enough to tuck behind the ears and the back reaches the collar.",
+    previewPrompt:
+      "Change the hairstyle to medium-length dark hair swept back off the forehead with natural volume and a soft matte finish, sides long enough to tuck behind the ears, back length reaching the shirt collar, slightly piecey and lived-in.",
+    extra: "Growing it out, about 10–13 cm on top and 7–9 cm on the sides, no fade or clippers. Keep length over the ears so it tucks back, and leave the back at collar length, just tidied. Texturise it so it sits back without looking heavy.",
+  },
+  {
+    tag: "Your picks",
+    name: "Classic slick back with volume (Bateman)",
+    why: "Polished and sharp. Hair is combed up and back with height at the front, a subtle side part and a medium-shine finish. Reads very finance.",
+    previewPrompt:
+      "Change the hairstyle to a classic 1980s executive slicked-back style: dark hair combed up and back with noticeable height at the front, a subtle side part, neat tapered sides combed back over the ears, medium-shine pomade finish, every strand controlled.",
+    extra: "Scissor cut all over, no clippers. About 10–12 cm on top, graduated shorter to 5–6 cm on the sides so they comb back cleanly over the ears. Tapered neckline. I'll style it back with pomade and a blow-dry for height.",
+  },
+  {
+    tag: "Your picks",
+    name: "Textured wavy side-sweep",
+    why: "Loose natural waves with volume, swept to one side and falling around the ears. Softer and more approachable, and it looks good with a suit or open collar.",
+    previewPrompt:
+      "Change the hairstyle to medium-length dark hair with loose natural waves and volume, swept to one side off the forehead, falling around the tops of the ears and touching the collar, soft and slightly tousled with a natural matte finish.",
+    extra: "Keep it long all over, about 12 cm on top and 8 cm on the sides. Layer it so the waves have movement and it doesn't go triangular. Remove a bit of bulk around the ears, no fade. I'll style it with sea salt spray and a light cream.",
+  },
+  {
+    tag: "Your picks",
+    name: "Long wet-look slick back",
+    why: "Longer hair combed straight back with a glossy, wet-look hold. Ends fall behind the ears to the nape. Bold, and best with stubble.",
+    previewPrompt:
+      "Change the hairstyle to long dark hair combed straight back off the forehead with a glossy wet-look gel finish and visible comb lines, length falling behind the ears to the nape of the neck, a few strands slightly loose.",
+    extra: "Growing it long, 13–15 cm on top with the sides past the ears, all scissor work. Keep the weight so it lies flat when combed back, and tidy the ends at the nape. I'll wear it with a strong-hold gel combed straight back.",
+  },
+  {
+    tag: "Your picks",
+    name: "Undone curtains, strands over the eyes",
+    why: "Long, loose middle-part curtains with heavy front pieces falling across the forehead and eyes. The relaxed, after-hours version of the slick back.",
+    previewPrompt:
+      "Change the hairstyle to long dark curtain hair with a loose centre part, heavy front pieces falling across the forehead and partly over the eyes, messy and undone, sides past the ears, natural matte texture.",
+    extra: "Long curtains, with the front pieces long enough to reach the cheekbones or eyes and the sides past the ears. Point-cut the ends so they separate into strands, and keep it heavy at the front. No fade.",
+  },
+];
 type Gen = { status: "loading" | "done" | "error"; image?: string; error?: string; label: string; base: string };
 export type StudioTab = "hair" | "skin" | "color" | "beard" | "glasses" | "outfits" | "custom";
 type Tab = StudioTab;
@@ -135,7 +179,7 @@ export function PreviewStudio({
   };
 
   const tabs: { key: Tab; label: string; items: readonly Option[] }[] = [
-    { key: "hair", label: "Hairstyles", items: report.hairstyles.map((h) => ({ ...h, extra: h.barberScript })) },
+    { key: "hair", label: "Hairstyles", items: [...MY_PICKS, ...report.hairstyles.map((h) => ({ ...h, extra: h.barberScript, tag: "Recommended for you" }))] },
     { key: "outfits", label: "Outfits", items: report.wardrobe?.outfits ?? [] },
     { key: "skin", label: "Clear skin", items: SKIN_OPTIONS },
     { key: "color", label: "Hair colour", items: report.hairColors },
@@ -309,6 +353,7 @@ export function PreviewStudio({
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         {o.occasion && <p className="eyebrow mb-1">{o.occasion.replace(/_/g, " ")}</p>}
+                        {o.tag && <p className={`eyebrow mb-1 ${o.tag === "Your picks" ? "!text-[#b8891a]" : ""}`}>{o.tag}</p>}
                         <h4 className="font-semibold">{o.name}</h4>
                         <p className="mt-1 text-sm text-muted">{o.why}</p>
                       </div>
