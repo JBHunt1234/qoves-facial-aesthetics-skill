@@ -7,6 +7,8 @@ export const DEMO_REPORT: Report = {
   summary:
     "Sample report. Balanced, slightly long oval face with a strong brow line and a moderately tapered jaw. The biggest gain is a cut that keeps height without adding length, plus light stubble to give the lower third more structure.",
   photoQuality: { usable: true, notes: "Demo image. Upload a straight-on, evenly lit photo taken at arm's length for a real read." },
+  goldenRatioNote:
+    "Sample. Nose-to-chin proportions sit close to 1.618, while face length runs long relative to width. Keeping the top shorter and adding side volume narrows that gap visually.",
   faceShape: { read: "Oval leaning long", notes: "Forehead and cheekbones are close in width and the jaw tapers gently. Height on top will lengthen it further." },
   features: [
     { area: "Hairline & forehead", observation: "Even hairline, forehead moderately tall.", implication: "A short textured fringe or forward-styled top shortens the upper third without hiding it.", confidence: "medium" },

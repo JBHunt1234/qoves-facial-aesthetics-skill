@@ -5,6 +5,7 @@ import { ReportView } from "@/components/ReportView";
 import { Spinner } from "@/components/PreviewStudio";
 import { ApiError, getAccessCode, postJson, setAccessCode } from "@/lib/api";
 import { detectFace, type FaceGeometry } from "@/lib/face";
+import { computeGolden, goldenAsMeasurements } from "@/lib/golden";
 import { fileToDataUrl, loadImage } from "@/lib/image";
 import type { Goals, Report } from "@/lib/schema";
 import { DEMO_REPORT } from "@/lib/demo-report";
@@ -130,7 +131,7 @@ export default function AnalyzePage() {
     try {
       const res = await postJson<{ report: Report }>(
         "/api/analyze",
-        { image: photo, sideImage: side ?? undefined, bodyImage: bodyPhoto ?? undefined, goals, measurements: geometry?.measurements ?? [] },
+        { image: photo, sideImage: side ?? undefined, bodyImage: bodyPhoto ?? undefined, goals, measurements: geometry ? [...geometry.measurements, ...goldenAsMeasurements(computeGolden(geometry.points))] : [] },
         ctrl.signal,
       );
       setReport(res.report);

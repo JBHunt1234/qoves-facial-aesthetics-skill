@@ -4,12 +4,14 @@ import { useState } from "react";
 import type { FaceGeometry } from "@/lib/face";
 import type { Report } from "@/lib/schema";
 import { FaceMap } from "./FaceMap";
+import { GoldenRatio } from "./GoldenRatio";
 import { PreviewStudio, type StudioTab } from "./PreviewStudio";
 
 const NAV = [
   ["overview", "Overview"],
   ["plan", "Priority plan"],
   ["map", "Face map"],
+  ["golden", "Golden ratio"],
   ["features", "Features"],
   ["hair", "Hairstyles"],
   ["looks", "Try looks"],
@@ -161,6 +163,20 @@ export function ReportView({
       </Section>
 
       {/* Features */}
+      {/* Golden ratio */}
+      <Section
+        id="golden"
+        title="Golden ratio"
+        subtitle="How close six of your facial proportions are to φ = 1.618. Hover a row to see it drawn on your face."
+      >
+        {geometry ? (
+          <GoldenRatio src={photo} geometry={geometry} />
+        ) : (
+          <p className="text-muted">This needs the face map. Upload a clear, front-facing photo so landmarks can be detected.</p>
+        )}
+        {report.goldenRatioNote && <p className="mt-6 max-w-3xl">{report.goldenRatioNote}</p>}
+      </Section>
+
       <Section id="features" title="Feature analysis">
         <div className="grid gap-3 md:grid-cols-2">
           {report.features.map((f, i) => (

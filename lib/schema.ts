@@ -57,6 +57,10 @@ export const ReportSchema = z.object({
     read: z.string().describe("e.g. 'Oval leaning long' — a soft read, not a label"),
     notes: z.string(),
   }),
+  goldenRatioNote: z
+    .string()
+    .describe("2-3 sentences interpreting the golden-ratio numbers if provided: which proportions sit closest/furthest from 1.618, and which styling levers (hair height, fringe, beard length at the chin, collar) visually shift them. Never frame it as an attractiveness score. Empty string if no golden-ratio data was provided.")
+    .default(""),
   features: z
     .array(
       z.object({
